@@ -27,11 +27,10 @@ const App = () => {
 
     fetchCountries();
   }, []);
-  console.log(countries);
 
   // Filter countries based on search term
   const filteredCountries = countries.filter((country) =>
-    country.common.includes(searchTerm)
+    country.common.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -42,6 +41,7 @@ const App = () => {
         placeholder="Search for a country..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
+        data-testid="search-input" // Added for Cypress targeting
       />
 
       {loading && <p>Loading...</p>}
@@ -51,10 +51,10 @@ const App = () => {
       {!loading && !error && (
         <div className="countryList">
           {filteredCountries.length === 0 ? (
-            <p>No results found.</p>
+            null
           ) : (
-            filteredCountries.map((country) => (
-              <div key={country.alpha3Code} className="countryCard">
+            filteredCountries.map((country, idx) => (
+              <div key={idx} className="countryCard" data-testid="country-card">
                 <img src={country.png} alt={`Flag of ${country.common}`} />
                 <h2>{country.common}</h2>
               </div>
